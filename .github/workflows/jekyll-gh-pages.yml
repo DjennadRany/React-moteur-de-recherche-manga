@@ -1,27 +1,25 @@
-# _config.yml
+on:
+  push:
+    branches:
+      - main  # Vérifiez que c'est la bonne branche
 
-# Site settings
-title: recherche  manga 
-description: Description de votre site.
-url: https://djennadrany.github.io # Changez ceci avec le nom de votre compte GitHub
-baseurl: "/React-moteur-de-recherche-manga"  # Changez ceci avec le nom de votre dépôt GitHub (s'il est différent du nom du projet)
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-# Build settings
-markdown: kramdown
-theme: minima  # Changez ceci avec le thème que vous utilisez, ou "minima" pour un thème minimal
-plugins:
-  - jekyll-feed
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 14
 
-# GitHub Pages settings
-destination: ./_site
-branch: gh-pages  # Spécifiez la branche GitHub Pages
+      - name: Install dependencies
+        run: npm install
 
-# Exclure des fichiers/fichiers de la génération
-exclude:
-  - Gemfile
-  - Gemfile.lock
-  - node_modules
-  - vendor
-  - .git
-  - .gitignore
-  - README.md
+      - name: Build
+        run: npm run build  # Assurez-vous que c'est la bonne commande
+
+      - name: Deploy to GitHub Pages
+        run: npx gh-pages -d build
