@@ -1,0 +1,27 @@
+# _config.yml
+
+# Site settings
+title: recherche  manga 
+description: Description de votre site.
+url: https://djennadrany.github.io # Changez ceci avec le nom de votre compte GitHub
+baseurl: "/React-moteur-de-recherche-manga"  # Changez ceci avec le nom de votre dépôt GitHub (s'il est différent du nom du projet)
+
+# Build settings
+markdown: kramdown
+theme: minima  # Changez ceci avec le thème que vous utilisez, ou "minima" pour un thème minimal
+plugins:
+  - jekyll-feed
+
+# GitHub Pages settings
+destination: ./_site
+branch: gh-pages  # Spécifiez la branche GitHub Pages
+
+# Exclure des fichiers/fichiers de la génération
+exclude:
+  - Gemfile
+  - Gemfile.lock
+  - node_modules
+  - vendor
+  - .git
+  - .gitignore
+  - README.md
