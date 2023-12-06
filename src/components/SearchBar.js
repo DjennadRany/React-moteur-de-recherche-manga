@@ -1,3 +1,5 @@
+// SearchBar.js
+
 import React, { useState } from 'react';
 
 const SearchBar = ({ onSearch }) => {
@@ -6,7 +8,12 @@ const SearchBar = ({ onSearch }) => {
   const handleChange = (event) => {
     const newQuery = event.target.value;
     setQuery(newQuery);
-    onSearch(newQuery);
+
+    // Ajoutez un délai (par exemple, 500 ms) avant de déclencher la recherche
+    // Cela permet d'éviter une recherche instantanée à chaque frappe de touche
+    setTimeout(() => {
+      onSearch(newQuery);
+    }, 500);
   };
 
   return (
