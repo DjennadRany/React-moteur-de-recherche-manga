@@ -1,7 +1,31 @@
 // src/components/FilterBar.js
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const FilterBar = ({ filters = {}, genres = [], years = [], onChange, onApplyFilter }) => {
+const FilterBar = ({ filters, onChange, onApplyFilter }) => {
+  const [genres, setGenres] = useState([]);
+  const [years, setYears] = useState([]);
+
+  useEffect(() => {
+    // Récupérer la liste des genres depuis l'API
+    axios.get('https://api.jikan.moe/v4/genres/anime')
+      .then(response => {
+        setGenres(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching genres:', error);
+      });
+
+    // Récupérer la liste des années depuis l'API
+    axios.get('https://api.jikan.moe/v4/years')
+      .then(response => {
+        setYears(response.data.data);
+      })
+      .catch(error => {
+        console.error('Error fetching years:', error);
+      });
+  }, []); // Le tableau vide [] signifie que cela s'exécute une seule fois après le montage
+
   return (
     <div>
       <label htmlFor="genre">Genre :</label>
