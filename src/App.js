@@ -12,39 +12,47 @@ const App = () => {
   const [selectedManga, setSelectedManga] = useState(null);
   const [filters, setFilters] = useState({
     genre: '',
-    date: '',
+    year: '',
   });
   const [genres, setGenres] = useState([]);
   const [years, setYears] = useState([]);
-  const [loading, setLoading] = useState(false); // Nouvel état pour indiquer si une requête est en cours
+  const [loading, setLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false); // Ajout de l'état pour contrôler l'ouverture de la modal
 
   const searchManga = useCallback(async (query) => {
     try {
-      setLoading(true); // Définir le chargement sur vrai au début de la requête
-      const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${query}&genre=${filters.genre}&date=${filters.date}`);
-      setMangaResults(response.data.data);
+      setLoading(true);
+
+      const response = await axios.get(`https://api.jikan.moe/v4/anime?q=${query}&genre=${filters.genre}&year=${filters.year}`);
+      const filteredResults = response.data.data.filter((manga) => {
+        if (filters.year === '') {
+          return true;
+        }
+        return manga.aired.from.includes(filters.year);
+      });
+
+      const sortedResults = filteredResults.sort((a, b) => b.aired.from.localeCompare(a.aired.from));
+      setMangaResults(sortedResults);
     } catch (error) {
       console.error('Error searching manga:', error);
-
       if (error.response && error.response.status === 429) {
         console.log('Too many requests. Waiting before retrying...');
-        setTimeout(() => {
-          searchManga(query);
-        }, 5000);
+        setTimeout(() => searchManga(query), 5000);
       }
     } finally {
-      setLoading(false); // Définir le chargement sur faux, que la requête réussisse ou échoue
+      setLoading(false);
     }
   }, [filters]);
 
   const fetchGenresAndYears = async () => {
     try {
-      const genresResponse = await axios.get('https://api.jikan.moe/v3/genre/anime/1');
-      setGenres(genresResponse.data.anime);
+      const [genresResponse, yearsResponse] = await Promise.all([
+        axios.get('https://api.jikan.moe/v4/genres/anime'),
+        axios.get('https://api.jikan.moe/v4/years')
+      ]);
       
-      // Replace '2023' with the current year or a suitable default
-      const currentYear = new Date().getFullYear();
-      const yearsArray = Array.from({ length: 10 }, (_, index) => currentYear - index);
+      setGenres(genresResponse.data.data);
+      const yearsArray = yearsResponse.data.data.map((yearObj) => yearObj.year);
       setYears(yearsArray);
     } catch (error) {
       console.error('Error fetching genres and years:', error);
@@ -60,18 +68,20 @@ const App = () => {
     try {
       const response = await axios.get(`https://api.jikan.moe/v4/anime/${manga.mal_id}`);
       setSelectedManga(response.data.data);
+      setIsModalOpen(true); // Ouvrir la modal lorsqu'une image est cliquée
     } catch (error) {
       console.error('Error getting manga details:', error);
     }
   };
 
   const handleClosePopup = () => {
+    setIsModalOpen(false);
     setSelectedManga(null);
   };
 
   return (
-    <div>
-      <h1>My Anime Search</h1>
+    <div className="container">
+      <h1 className="text-center">My Anime Search</h1>
       <SearchBar onSearch={searchManga} />
       <FilterBar
         filters={filters}
@@ -81,7 +91,9 @@ const App = () => {
         onApplyFilter={() => searchManga('')}
       />
       <MangaList mangas={mangaResults} onMangaClick={handleMangaClick} />
-      {selectedManga && <MangaDetailPopup manga={selectedManga} onClose={handleClosePopup} />}
+      {selectedManga && (
+        <MangaDetailPopup manga={selectedManga} onClose={handleClosePopup} isModalOpen={isModalOpen} />
+      )}
       {loading && <p>Loading...</p>}
     </div>
   );

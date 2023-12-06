@@ -19,7 +19,9 @@ const FilterBar = ({ filters, onChange, onApplyFilter }) => {
     // Récupérer la liste des années depuis l'API
     axios.get('https://api.jikan.moe/v4/years')
       .then(response => {
-        setYears(response.data.data);
+        // Mapper directement la propriété "year" de chaque objet
+        const yearsArray = response.data.data.map(yearObj => yearObj.year);
+        setYears(yearsArray);
       })
       .catch(error => {
         console.error('Error fetching years:', error);
