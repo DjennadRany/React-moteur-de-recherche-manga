@@ -1,15 +1,56 @@
 // src/components/MangaList.js
 import React from 'react';
+import AnimeCard from './AnimeCard';
 
-const MangaList = ({ mangas, onMangaClick }) => {
+const MangaList = ({
+  mangas,
+  onToggleFavorite,
+  favoritesSet,
+  isLoading,
+  emptyMessage,
+  skeletonCount = 12,
+}) => {
+  if (isLoading && mangas.length === 0) {
+    return (
+      <div className="results-section">
+        <div className="results-header">
+          <h2>Chargement...</h2>
+        </div>
+        <ul className="manga-grid">
+          {Array.from({ length: skeletonCount }).map((_, index) => (
+            <li key={`skeleton-${index}`} className="manga-card skeleton-card">
+              <div className="skeleton-media" />
+              <div className="skeleton-line" />
+              <div className="skeleton-line short" />
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+
+  if (!isLoading && mangas.length === 0) {
+    return (
+      <div className="empty-state" role="status">
+        <p>{emptyMessage}</p>
+      </div>
+    );
+  }
+
   return (
-    <div>
-      <h2>Résultats de la recherche :</h2>
-      <ul className="hub">
+    <div className="results-section">
+      <div className="results-header">
+        <h2>Résultats</h2>
+        <span className="results-count">{mangas.length} titres</span>
+      </div>
+      <ul className="manga-grid">
         {mangas.map((manga) => (
-          <li className="li-hub" key={manga.mal_id} onClick={() => onMangaClick(manga)}>
-            <img src={manga.images.jpg.large_image_url} alt={manga.title} />
-            <p>{manga.title}</p>
+          <li key={manga.mal_id} className="manga-grid__item">
+            <AnimeCard
+              anime={manga}
+              favoritesSet={favoritesSet}
+              onToggleFavorite={onToggleFavorite}
+            />
           </li>
         ))}
       </ul>

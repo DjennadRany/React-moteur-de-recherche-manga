@@ -1,37 +1,65 @@
 // SearchBar.js
 
-import React, { useState } from 'react';
+import React, { useEffect, useRef } from 'react';
 
-const SearchBar = ({ onSearch }) => {
-  const [query, setQuery] = useState('');
+const SearchBar = ({ query, onQueryChange, onSearch }) => {
+  const debounceRef = useRef(null);
 
   const handleChange = (event) => {
     const newQuery = event.target.value;
-    setQuery(newQuery);
+    onQueryChange(newQuery);
 
-    // Ajoutez un délai (par exemple, 500 ms) avant de déclencher la recherche
-    // Cela permet d'éviter une recherche instantanée à chaque frappe de touche
-    setTimeout(() => {
-      onSearch(newQuery);
+    if (debounceRef.current) {
+      clearTimeout(debounceRef.current);
+    }
+
+    debounceRef.current = setTimeout(() => {
+      if (newQuery.trim() !== '') {
+        onSearch(newQuery, { explicit: false });
+      }
     }, 500);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSearch(query, { explicit: true });
+  };
+
+  const handleClear = () => {
+    onQueryChange('');
+    onSearch('', { explicit: true });
+  };
+
+  useEffect(() => {
+    return () => {
+      if (debounceRef.current) {
+        clearTimeout(debounceRef.current);
+      }
+    };
+  }, []);
+
   return (
-    <div className="search-bar">
+    <form className="search-bar" onSubmit={handleSubmit}>
       <input
         type="text"
         className="search-input"
         placeholder="Rechercher des mangas..."
         value={query}
         onChange={handleChange}
+        aria-label="Rechercher un anime"
       />
-      <button
-        className="search-button"
-        onClick={() => onSearch(query)}
-      >
+      <button type="submit" className="search-button">
         Rechercher
       </button>
-    </div>
+      <button
+        type="button"
+        className="ghost-button"
+        onClick={handleClear}
+        aria-label="Effacer la recherche"
+      >
+        Effacer
+      </button>
+    </form>
   );
 };
 
