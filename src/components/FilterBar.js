@@ -3,11 +3,12 @@ import React from 'react';
 
 const FilterBar = ({ filters, genres, years, onChange, onApplyFilter, onClearFilters }) => {
   return (
-    <div className="filter-bar">
+    <div className="filter-bar panel">
       <div className="filter-group">
         <label htmlFor="genre">Genre</label>
         <select
           id="genre"
+          className="input"
           value={filters.genre}
           onChange={(e) => onChange('genre', e.target.value)}
         >
@@ -24,6 +25,7 @@ const FilterBar = ({ filters, genres, years, onChange, onApplyFilter, onClearFil
         <label htmlFor="date">Année</label>
         <select
           id="date"
+          className="input"
           value={filters.year}
           onChange={(e) => onChange('year', e.target.value)}
         >
@@ -37,10 +39,10 @@ const FilterBar = ({ filters, genres, years, onChange, onApplyFilter, onClearFil
       </div>
 
       <div className="filter-actions">
-        <button type="button" className="primary-button" onClick={onApplyFilter}>
+        <button type="button" className="primary-button btn btnPrimary" onClick={onApplyFilter}>
           Appliquer les filtres
         </button>
-        <button type="button" className="ghost-button" onClick={onClearFilters}>
+        <button type="button" className="ghost-button btn btnGhost" onClick={onClearFilters}>
           Réinitialiser
         </button>
       </div>

@@ -155,7 +155,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
 
   if (loading) {
     return (
-      <div className="detail-page container">
+      <div className="detail-page appShell">
         <div className="detail-skeleton hero" />
         <div className="detail-skeleton block" />
         <div className="detail-skeleton block" />
@@ -165,10 +165,10 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
 
   if (error) {
     return (
-      <div className="detail-page container">
+      <div className="detail-page appShell">
         <div className="error-state" role="alert">
           <p>{error}</p>
-          <Link to="/" className="ghost-button">
+          <Link to="/" className="ghost-button btn btnGhost">
             Retour à la recherche
           </Link>
         </div>
@@ -182,7 +182,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
 
   return (
     <div
-      className="detail-page container"
+      className="detail-page appShell"
       style={{
         '--detail-bg': `url(${manga.images?.jpg?.large_image_url || manga.images?.jpg?.image_url})`,
       }}
@@ -222,7 +222,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
             <div className="detail-actions">
               <button
                 type="button"
-                className={`primary-button ${isFavorite ? 'is-active' : ''}`}
+                className={`primary-button btn btnPrimary ${isFavorite ? 'is-active' : ''}`}
                 onClick={() => onToggleFavorite(manga.mal_id)}
               >
                 {isFavorite ? 'Favori ✓' : 'Ajouter aux favoris'}
@@ -232,7 +232,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
                   href={manga.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="ghost-button"
+                  className="ghost-button btn btnGhost"
                 >
                   Ouvrir sur MAL
                 </a>
@@ -255,7 +255,11 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
           {trailerUrl ? (
             <div className="trailer-card">
               {!showTrailer ? (
-                <button type="button" className="trailer-button" onClick={() => setShowTrailer(true)}>
+                <button
+                  type="button"
+                  className="trailer-button btn btnPrimary"
+                  onClick={() => setShowTrailer(true)}
+                >
                   ▶ Lire le trailer
                 </button>
               ) : (
@@ -274,7 +278,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
                     href={trailerExternalUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="ghost-button"
+                    className="ghost-button btn btnGhost"
                   >
                     Ouvrir le trailer sur YouTube
                   </a>
@@ -283,7 +287,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
                     href={youtubeSearchUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="ghost-button"
+                    className="ghost-button btn btnGhost"
                   >
                     Rechercher sur YouTube
                   </a>
@@ -297,7 +301,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
                 href={youtubeSearchUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="primary-button"
+                className="primary-button btn btnPrimary"
               >
                 Rechercher sur YouTube
               </a>
@@ -313,7 +317,7 @@ const AnimeDetailPage = ({ favoritesSet, onToggleFavorite }) => {
         {shouldClamp && (
           <button
             type="button"
-            className="ghost-button"
+            className="ghost-button btn btnGhost"
             onClick={() => setSynopsisExpanded((prev) => !prev)}
           >
             {synopsisExpanded ? 'Réduire' : 'Lire la suite'}

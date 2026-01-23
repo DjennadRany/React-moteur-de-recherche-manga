@@ -39,21 +39,21 @@ const SearchBar = ({ query, onQueryChange, onSearch }) => {
   }, []);
 
   return (
-    <form className="search-bar" onSubmit={handleSubmit}>
+    <form className="search-bar panel" onSubmit={handleSubmit}>
       <input
         type="text"
-        className="search-input"
+        className="search-input input"
         placeholder="Rechercher des mangas..."
         value={query}
         onChange={handleChange}
         aria-label="Rechercher un anime"
       />
-      <button type="submit" className="search-button">
+      <button type="submit" className="search-button btn btnPrimary">
         Rechercher
       </button>
       <button
         type="button"
-        className="ghost-button"
+        className="ghost-button btn btnGhost"
         onClick={handleClear}
         aria-label="Effacer la recherche"
       >

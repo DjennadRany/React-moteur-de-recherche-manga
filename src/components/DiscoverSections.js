@@ -99,7 +99,7 @@ const DiscoverSections = ({ favoritesSet, onToggleFavorite }) => {
               {sectionState.error && (
                 <button
                   type="button"
-                  className="ghost-button"
+                  className="ghost-button btn btnGhost"
                   onClick={() => fetchSection(section)}
                 >
                   Réessayer

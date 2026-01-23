@@ -226,7 +226,7 @@ const App = () => {
   const showDiscover = !query.trim() && !hasSearchedRef.current;
 
   const HomePage = () => (
-    <div className="container">
+    <div className="appShell">
       <header className="page-header">
         <div className="brand-bar">
           <img
@@ -236,7 +236,7 @@ const App = () => {
           />
           <h1 className="brand-title">OtakuDex</h1>
         </div>
-        <p className="subtitle">Le Pokedex moderne des animes.</p>
+        <p className="brandTagline">Le Pokedex moderne des animes.</p>
       </header>
 
       <div className="view-toggle" role="tablist" aria-label="Basculer l'affichage">
@@ -280,7 +280,11 @@ const App = () => {
       {error && (
         <div className="error-state" role="alert">
           <p>{error}</p>
-          <button type="button" className="ghost-button" onClick={() => handleSearch(query)}>
+          <button
+            type="button"
+            className="ghost-button btn btnGhost"
+            onClick={() => handleSearch(query)}
+          >
             Réessayer
           </button>
         </div>
@@ -300,7 +304,7 @@ const App = () => {
 
       {!loading && !error && hasNextPage && (
         <div className="load-more">
-          <button type="button" className="primary-button" onClick={handleLoadMore}>
+          <button type="button" className="primary-button btn btnPrimary" onClick={handleLoadMore}>
             Charger plus
           </button>
         </div>
