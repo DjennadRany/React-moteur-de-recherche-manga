@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
 import AnimeCard from './AnimeCard';
+import { fetchSeasonNow, fetchTopAiring } from '../../services/animeService';
 
 const CACHE_TTL = 10 * 60 * 1000;
 
@@ -9,25 +9,21 @@ const sectionsConfig = [
     key: 'airing',
     title: 'Tendances (Airing)',
     subtitle: 'Les animes diffusés en ce moment',
-    url: 'https://api.jikan.moe/v4/top/anime?filter=airing&limit=12',
+    fetcher: fetchTopAiring,
   },
   {
-    key: 'popular',
-    title: 'Populaires',
-    subtitle: 'Les incontournables du moment',
-    url: 'https://api.jikan.moe/v4/top/anime?filter=bypopularity&limit=12',
-  },
-  {
-    key: 'upcoming',
-    title: 'À venir',
-    subtitle: 'Les sorties à surveiller',
-    url: 'https://api.jikan.moe/v4/top/anime?filter=upcoming&limit=12',
+    key: 'season-now',
+    title: 'Season Now',
+    subtitle: 'Les nouveautés de la saison',
+    fetcher: fetchSeasonNow,
   },
 ];
 
 const DiscoverSections = ({ favoritesSet, onToggleFavorite }) => {
   const cacheRef = useRef(new Map());
   const abortRef = useRef([]);
+  const didFetchRef = useRef(false);
+  const retryRef = useRef(new Map());
 
   const [state, setState] = useState(() =>
     sectionsConfig.reduce((acc, section) => {
@@ -37,7 +33,7 @@ const DiscoverSections = ({ favoritesSet, onToggleFavorite }) => {
   );
 
   const fetchSection = useCallback(async (section) => {
-    const cached = cacheRef.current.get(section.url);
+    const cached = cacheRef.current.get(section.key);
     if (cached && Date.now() - cached.timestamp < CACHE_TTL) {
       setState((prev) => ({
         ...prev,
@@ -55,15 +51,31 @@ const DiscoverSections = ({ favoritesSet, onToggleFavorite }) => {
     }));
 
     try {
-      const response = await axios.get(section.url, { signal: controller.signal });
-      const items = response.data?.data || [];
-      cacheRef.current.set(section.url, { data: items, timestamp: Date.now() });
+      const items = await section.fetcher({ signal: controller.signal });
+      cacheRef.current.set(section.key, { data: items, timestamp: Date.now() });
+      retryRef.current.delete(section.key);
       setState((prev) => ({
         ...prev,
         [section.key]: { data: items, loading: false, error: '' },
       }));
     } catch (error) {
       if (error.code === 'ERR_CANCELED') {
+        return;
+      }
+      if (error.response?.status === 429) {
+        const hasRetried = retryRef.current.get(section.key);
+        setState((prev) => ({
+          ...prev,
+          [section.key]: {
+            ...prev[section.key],
+            loading: false,
+            error: 'Limite Jikan atteinte, réessai...',
+          },
+        }));
+        if (!hasRetried) {
+          retryRef.current.set(section.key, true);
+          setTimeout(() => fetchSection(section), 3000);
+        }
         return;
       }
       setState((prev) => ({
@@ -78,6 +90,10 @@ const DiscoverSections = ({ favoritesSet, onToggleFavorite }) => {
   }, []);
 
   useEffect(() => {
+    if (didFetchRef.current) {
+      return;
+    }
+    didFetchRef.current = true;
     sectionsConfig.forEach((section) => fetchSection(section));
     return () => {
       abortRef.current.forEach((controller) => controller.abort());

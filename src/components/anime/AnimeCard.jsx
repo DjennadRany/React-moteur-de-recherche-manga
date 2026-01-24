@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Poster from './Poster';
 
 const getYearFromAired = (manga) => {
   const from = manga?.aired?.from;
@@ -39,14 +40,7 @@ const AnimeCard = ({
     <article className={`manga-card anime-card anime-card--${variant}`}>
       <Wrapper {...wrapperProps} className="anime-card__link">
         <div className="manga-card__media">
-          {imageUrl ? (
-            <img src={imageUrl} alt={title} loading="lazy" />
-          ) : (
-            <div className="image-placeholder">
-              <div className="image-placeholder__icon" />
-              <span>No cover</span>
-            </div>
-          )}
+          <Poster src={imageUrl} alt={title} />
           {badgeTop && <span className="badge badge-top">{badgeTop}</span>}
           {showFavorite && onToggleFavorite && (
             <button
