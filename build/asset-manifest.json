@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/React-moteur-de-recherche-manga/static/css/main.7eb129b4.css",
-    "main.js": "/React-moteur-de-recherche-manga/static/js/main.240344f9.js",
+    "main.css": "/React-moteur-de-recherche-manga/static/css/main.3137b6cc.css",
+    "main.js": "/React-moteur-de-recherche-manga/static/js/main.d28b11fd.js",
     "static/js/787.c1a5313d.chunk.js": "/React-moteur-de-recherche-manga/static/js/787.c1a5313d.chunk.js",
     "index.html": "/React-moteur-de-recherche-manga/index.html",
-    "main.7eb129b4.css.map": "/React-moteur-de-recherche-manga/static/css/main.7eb129b4.css.map",
-    "main.240344f9.js.map": "/React-moteur-de-recherche-manga/static/js/main.240344f9.js.map",
+    "main.3137b6cc.css.map": "/React-moteur-de-recherche-manga/static/css/main.3137b6cc.css.map",
+    "main.d28b11fd.js.map": "/React-moteur-de-recherche-manga/static/js/main.d28b11fd.js.map",
     "787.c1a5313d.chunk.js.map": "/React-moteur-de-recherche-manga/static/js/787.c1a5313d.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.7eb129b4.css",
-    "static/js/main.240344f9.js"
+    "static/css/main.3137b6cc.css",
+    "static/js/main.d28b11fd.js"
   ]
 }
